@@ -11,7 +11,8 @@ def generate_hex_grid(x_min, x_max, y_min, y_max, s ,x_start, y_start):
     
     x_width = math.floor((x_max - x_min) / width)+2
     y_height = math.floor((y_max - y_min) / height)+2
-
+    if (y_height % 2 == 1):
+        y_height += 1
     
     for y in range(y_height):
         for x in range(x_width):

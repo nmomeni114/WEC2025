@@ -22,7 +22,7 @@ def getCSV(file):
 
 def plotCSV(file, title):
     col1, col2 = getCSV(file)
-    plt.plot(col1, col2)
+    plt.plot(col1, col2, '.', markersize=5)
     plt.xlabel('Longtitude (km)')
     plt.ylabel('Latitude (km)')
     plt.title('Plot of ' + title + ' Cordinates')
@@ -48,55 +48,72 @@ def isPointInside(polygon, x, y):
     point = Point(x, y)
     return polygon.contains(point)
 
-#Plot a polygon and multiple points, coloring them based on whether they're inside or outside
+#Plot a polygon and multiple circles, coloring them based on whether they're inside/intersecting
 #Done with the help of Claude AI
-def plotPolygonWithPoints(polygon, points=None, inside_color='green', outside_color='red'):
+def plotPolygonWithPoints(polygon, points=None, radius=2.5, inside_color='green', outside_color='red'):
     """
+    Plot a polygon and multiple circles, only showing those inside or intersecting the polygon
+    
     Args:
         polygon: Shapely Polygon object
         points: List of (x,y) tuples or Point objects
-        inside_color: Color for points inside the polygon
-        outside_color: Color for points outside the polygon
+        radius: Radius of the circles
+        inside_color: Color for circles inside the polygon
+        outside_color: Color for circles intersecting the polygon
     """
+    from matplotlib.patches import Circle
+    from shapely.geometry import Point
+    
     # Create figure
-    plt.figure(figsize=(10, 10))
-
-    # Plot polygon
+    fig, ax = plt.subplots(figsize=(10, 10))
+    
+    # Plot polygon border
     x, y = polygon.exterior.xy
-    plt.plot(x, y, 'b-', label='Polygon Border')
+    plt.plot(x, y, '.', color='blue', markersize=5, label='Border Points')
+    
+    total_wasted_area = 0
     
     if points:
-        # Convert all points to Point objects if they're not already
-        points = [Point(p) if not isinstance(p, Point) else p for p in points]
-        
-        # Separate points into inside and outside
-        inside_points = [p for p in points if polygon.contains(p)]
-        outside_points = [p for p in points if not polygon.contains(p)]
-        
-        # Plot inside points
-        if inside_points:
-            x_in = [p.x for p in inside_points]
-            y_in = [p.y for p in inside_points]
-            plt.plot(x_in, y_in, 'o', color=inside_color, label='Inside Points')
+        # Convert points to circles and categorize them
+        for p in points:
+            if not isinstance(p, Point):
+                p = Point(p)
             
-        # Plot outside points
-        if outside_points:
-            x_out = [p.x for p in outside_points]
-            y_out = [p.y for p in outside_points]
-            plt.plot(x_out, y_out, 'o', color=outside_color, label='Outside Points')
+            # Create Shapely circle
+            circle = p.buffer(radius)
+            
+            # Only process circles that interact with the polygon
+            if polygon.intersects(circle):
+                if polygon.contains(circle):
+                    # Circle completely inside
+                    circle_patch = Circle((p.x, p.y), radius, alpha=0.3, 
+                                       color=inside_color, label='Inside' if total_wasted_area == 0 else "")
+                    ax.add_patch(circle_patch)
+                else:
+                    # Circle intersects border
+                    circle_patch = Circle((p.x, p.y), radius, alpha=0.3, 
+                                       color=outside_color, label='Intersecting' if total_wasted_area == 0 else "")
+                    ax.add_patch(circle_patch)
+                    
+                    # Calculate and show wasted area
+                    wasted_area = circle.difference(polygon)
+                    if not wasted_area.is_empty:
+                        total_wasted_area += wasted_area.area
+                        # Plot the wasted area
+                        if hasattr(wasted_area, 'exterior'):
+                            x_waste, y_waste = wasted_area.exterior.xy
+                            plt.fill(x_waste, y_waste, color='orange', alpha=0.5, 
+                                   label='Wasted Area' if total_wasted_area == wasted_area.area else "")
     
     plt.grid(True)
+    plt.axis('equal')  # Make circles appear circular
     plt.legend()
+    plt.title(f'Total Wasted Area: {total_wasted_area:.2f} square units')
     plt.show()
+    
+    return total_wasted_area
 
-def create_hexagon(center, radius):
-    """Create a Shapely polygon representing a hexagon"""
-    angles = np.linspace(0, 2*np.pi, 7)[:-1]  # 6 points, excluding the repeated last point
-    x = center[0] + radius * np.cos(angles)
-    y = center[1] + radius * np.sin(angles)
-    return Polygon(zip(x, y))
 
-# Example usage:
 if __name__ == "__main__":
     plotCSV("coordinates2011.csv" , "2011")
     plotCSV("coordinates2005.csv" , "2005")

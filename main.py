@@ -15,7 +15,13 @@ hex_grid_x, hex_grid_y = hg.generate_hex_grid(x_min, x_max, y_min, y_max, s, 0 ,
 #hex_grid = zip(hex_grid_x,hex_grid_y)
 
 polygon = gf.getPolygonFromPoints(border_data_X, border_data_Y)
-
+# In your main.py
+# Create test points (your hex grid points)
+polygon = gf.getPolygonFromPoints(border_data_X, border_data_Y)
+points = list(zip(hex_grid_x, hex_grid_y))
+# Plot with circles of radius 2.5
+wasted_area = gf.plotPolygonWithPoints(polygon, points, radius=2.5)
+print(f"Total wasted area: {wasted_area}")
 #hex.greedy_hexagon_coverage(polygon.exterior.xy, hex_grid, s)
 
 plt.plot(hex_grid_x, hex_grid_y, 'r-', label='Hex Grid', marker = ".")
@@ -25,3 +31,4 @@ plt.ylabel('Latitude (km)')
 plt.grid(True)
 plt.show()
 
+gf.plotPolygonWithPoints(polygon, set(zip(hex_grid_x, hex_grid_y)), 'green', 'red')
