@@ -120,6 +120,46 @@ def plotPolygonWithPoints(polygon, points=None, radius=2.5, inside_color='green'
     
     return total_wasted_area, inside_count, intersecting_count
 
+def calculatePolygonCircles(polygon, points=None, radius=2.5):
+    """
+    Calculate metrics for circles within and intersecting a polygon without plotting
+    
+    Args:
+        polygon: Shapely Polygon object
+        points: List of (x,y) tuples or Point objects
+        radius: Radius of the circles
+    Returns:
+        total_wasted_area: Area of circles outside the polygon
+        inside_count: Number of circles completely inside
+        intersecting_count: Number of circles intersecting the border
+    """
+    from shapely.geometry import Point
+    
+    total_wasted_area = 0
+    inside_count = 0
+    intersecting_count = 0
+    
+    if points:
+        # Convert points to circles and categorize them
+        for p in points:
+            if not isinstance(p, Point):
+                p = Point(p)
+            
+            # Create Shapely circle
+            circle = p.buffer(radius)
+            
+            # Only process circles that interact with the polygon
+            if polygon.intersects(circle):
+                if polygon.contains(circle):
+                    inside_count += 1
+                else:
+                    intersecting_count += 1
+                    # Calculate wasted area
+                    wasted_area = circle.difference(polygon)
+                    if not wasted_area.is_empty:
+                        total_wasted_area += wasted_area.area
+    
+    return total_wasted_area, inside_count, intersecting_count
 
 if __name__ == "__main__":
     plotCSV("coordinates2011.csv" , "2011")
