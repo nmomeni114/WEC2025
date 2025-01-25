@@ -50,7 +50,7 @@ def isPointInside(polygon, x, y):
 
 #Plot a polygon and multiple circles, coloring them based on whether they're inside/intersecting
 #Done with the help of Claude AI
-def plotPolygonWithPoints(polygon, points=None, radius=2.5, inside_color='green', outside_color='red'):
+def plotPolygonWithPoints(polygon, points=None, radius=2.5, inside_color='green', outside_color='red', year=''):
     """
     Plot a polygon and multiple circles, only showing those inside or intersecting the polygon
     
@@ -60,6 +60,7 @@ def plotPolygonWithPoints(polygon, points=None, radius=2.5, inside_color='green'
         radius: Radius of the circles
         inside_color: Color for circles inside the polygon
         outside_color: Color for circles intersecting the polygon
+        year: Year to display in the title
     """
     from matplotlib.patches import Circle
     from shapely.geometry import Point
@@ -72,6 +73,8 @@ def plotPolygonWithPoints(polygon, points=None, radius=2.5, inside_color='green'
     plt.plot(x, y, '.', color='blue', markersize=5, label='Border Points')
     
     total_wasted_area = 0
+    inside_count = 0
+    intersecting_count = 0
     
     if points:
         # Convert points to circles and categorize them
@@ -87,13 +90,15 @@ def plotPolygonWithPoints(polygon, points=None, radius=2.5, inside_color='green'
                 if polygon.contains(circle):
                     # Circle completely inside
                     circle_patch = Circle((p.x, p.y), radius, alpha=0.3, 
-                                       color=inside_color, label='Inside' if total_wasted_area == 0 else "")
+                                       color=inside_color, label='Inside' if inside_count == 0 else "")
                     ax.add_patch(circle_patch)
+                    inside_count += 1
                 else:
                     # Circle intersects border
                     circle_patch = Circle((p.x, p.y), radius, alpha=0.3, 
-                                       color=outside_color, label='Intersecting' if total_wasted_area == 0 else "")
+                                       color=outside_color, label='Intersecting' if intersecting_count == 0 else "")
                     ax.add_patch(circle_patch)
+                    intersecting_count += 1
                     
                     # Calculate and show wasted area
                     wasted_area = circle.difference(polygon)
@@ -108,10 +113,12 @@ def plotPolygonWithPoints(polygon, points=None, radius=2.5, inside_color='green'
     plt.grid(True)
     plt.axis('equal')  # Make circles appear circular
     plt.legend()
-    plt.title(f'Total Wasted Area: {total_wasted_area:.2f} square units')
+    total_circles = inside_count + intersecting_count
+    title = f'Cowgary City Limits {year}\nTotal Circles: {total_circles} (Inside: {inside_count}, Intersecting: {intersecting_count})\nTotal Wasted Area: {total_wasted_area:.2f} square units'
+    plt.title(title)
     plt.show()
     
-    return total_wasted_area
+    return total_wasted_area, inside_count, intersecting_count
 
 
 if __name__ == "__main__":
