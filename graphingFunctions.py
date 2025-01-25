@@ -99,6 +99,10 @@ def create_hexagon(center, radius):
 # Example usage:
 if __name__ == "__main__":
     plotCSV("coordinates2011.csv" , "2011")
+    plotCSV("coordinates2005.csv" , "2005")
+    plotCSV("coordinates1964.csv" , "1964")
+
+
     # Create polygon from CSV
     col1, col2 = getCSV("coordinates2011.csv")
     polygon = getPolygonFromPoints(col1, col2)
