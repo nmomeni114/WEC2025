@@ -10,7 +10,7 @@ s = 2.5
 border_data_X, border_data_Y = gf.getCSV('coordinates1964.csv')
 x_max, x_min, y_max, y_min = gf.findBorders(border_data_X, border_data_Y)
 
-hex_grid_x, hex_grid_y = hg.generate_hex_grid_optimized(x_min, x_max, y_min, y_max, s, 0 , 0 , 0)
+hex_grid_x, hex_grid_y = hg.generate_hex_grid(x_min, x_max, y_min, y_max, s, 0 , 0)
 #Shoutout to hpaulj for the zip
 #hex_grid = zip(hex_grid_x,hex_grid_y)
 

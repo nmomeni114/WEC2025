@@ -1,22 +1,31 @@
 import numpy as np
-
+import math 
 #generate center points for a hexagon grid
-def generate_hex_grid(x_min, x_max, y_min, y_max, s):
-    width = 2 * s
-    height = np.sqrt(3) * s
+def generate_hex_grid(x_min, x_max, y_min, y_max, s ,x_start, y_start):
+    width = 3 * s
+    height = np.sqrt(.5) * s
 
     # Create grid points
     x_coords = []
     y_coords = []
+    
+    x_width = math.floor((x_max - x_min) / width)+2
+    y_height = math.floor((y_max - y_min) / height)+2
 
-    for x in np.arange(x_min, x_max + width, width * 0.75):  # Horizontal shift by 3/4 width
-        for y in np.arange(y_min, y_max + height, height):
-            x_coords.append(x)
-            y_coords.append(y)
+    
+    for y in range(y_height):
+        for x in range(x_width):
+            x_coords.append(x_start)
+            y_coords.append(y_start)
+           
+            if (x_start > x_max):
+                x_start -= x_width * width
+            x_start += width
 
-            # Shift every other column
-            if int((x - x_min) / width) % 2 == 1:
-                y_coords[-1] += height / 2
+        x_start += width/2
+        if (y_start > y_max):
+            y_start -= y_height * height
+        y_start += height
 
     return np.array(x_coords), np.array(y_coords)
 
@@ -27,6 +36,10 @@ def generate_hex_grid(x_min, x_max, y_min, y_max, s):
 def generate_hex_grid_optimized(x_min, x_max, y_min, y_max, s, start_x, start_y, angle):
     width = 2 * s
     height = np.sqrt(3) * s
+    length = np.sqrt(width**2 + height**2)
+
+    #so that it only moves up
+    angle = angle % np.pi
 
     # Create grid points
     x_coords = []
@@ -39,9 +52,8 @@ def generate_hex_grid_optimized(x_min, x_max, y_min, y_max, s, start_x, start_y,
     xx = x
     yy = y
 
-    while (start_x>x_min-2*s) & (start_y>y_min-2*s):
-        
-        while (y < y_max + 2*s) & (x < x_max + 2*s):
+    while (start_y > y_min-2*s) & (start_y < y_max+2*s):
+        while (x < x_max + 2*s):
             y += height * np.sin(angle)
             x += width * np.cos(angle)
             x_coords.append(x)
@@ -49,34 +61,37 @@ def generate_hex_grid_optimized(x_min, x_max, y_min, y_max, s, start_x, start_y,
 
         x = start_x
         y = start_y
-        while (x > x_min - 2*s) & (y > y_min - 2*s):
+
+        while (x > x_min - 2*s):
             y -= height * np.sin(angle)
             x -= width * np.cos(angle)
             x_coords.append(x)
             y_coords.append(y)
 
-        start_x = start_x + height * np.sin(angle)
-        start_y = start_y + width * np.cos(angle)
+        start_x = start_x + length * np.sin(angle)
+        start_y = start_y + length * np.cos(angle)
 
     start_x = xx
     start_y = yy
-    while (start_x< x_max+2*s) & (start_y<y_max+2*s):
 
-        start_x = start_x - height * np.sin(angle)
-        start_y = start_y - width * np.cos(angle)
+    while (start_y > y_min-2*s) & (start_y < y_max+2*s):
+        start_x = start_x - length * np.sin(angle)
+        start_y = start_y - length * np.cos(angle)
 
-        while (y < y_max + 2*s) & (x < x_max + 2*s):
+        while (x < x_max + 2*s):
             y += height * np.sin(angle)
             x += width * np.cos(angle)
             x_coords.append(x)
             y_coords.append(y)
-
+        
         x = start_x
         y = start_y
-        while (x > x_min - 2*s) & (y > y_min - 2*s):
+
+        while (x > x_min - 2*s):
             y -= height * np.sin(angle)
             x -= width * np.cos(angle)
             x_coords.append(x)
             y_coords.append(y)
+
 
     return np.array(x_coords), np.array(y_coords)
