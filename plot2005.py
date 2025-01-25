@@ -18,7 +18,7 @@ plt.grid(True)
 plt.show()
 
 # Load the CSV and skip the non-numeric header
-data = pd.read_csv('your_file.csv', header=0)  # Assumes the first row is the header
+data = pd.read_csv('C:\Users\denni\Downloads\coordinates2005.csv', header=0)  # Assumes the first row is the header
 
 # If there's extra non-numeric data elsewhere, you can clean it
 data = data.apply(pd.to_numeric, errors='coerce')  # Convert to numbers, replace non-numeric with NaN
