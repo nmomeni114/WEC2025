@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Read the CSV file
-file_path = r'C:\Users\denni\Downloads\coordinates1964.csv'
+file_path = r'C:\Users\denni\Downloads\coordinates1963.csv'
 data = pd.read_csv(file_path)
 
 # Extract columns
