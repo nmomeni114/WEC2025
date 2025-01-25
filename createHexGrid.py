@@ -41,40 +41,40 @@ def generate_hex_grid_optimized(x_min, x_max, y_min, y_max, s, start_x, start_y,
     while start_x>x_min-2*s & start_y>y_min-2*s:
         
         while y < y_max + 2*s & x < x_max + 2*s:
-            y += 2*s * np.sin(angle)
-            x += 2*s * np.cos(angle)
+            y += height * np.sin(angle)
+            x += width * np.cos(angle)
             x_coords.append(x)
             y_coords.append(y)
 
         x = start_x
         y = start_y
         while x > x_min - 2*s & y > y_min - 2*s:
-            y -= 2*s * np.sin(angle)
-            x -= 2*s * np.cos(angle)
+            y -= height * np.sin(angle)
+            x -= width * np.cos(angle)
             x_coords.append(x)
             y_coords.append(y)
 
-        start_x = start_x + 2*s * np.sin(angle)
-        start_y = start_y + 2*s * np.cos(angle)
+        start_x = start_x + height * np.sin(angle)
+        start_y = start_y + width * np.cos(angle)
 
     start_x = xx
     start_y = yy
     while start_x< x_max+2*s & start_y<y_max+2*s:
 
-        start_x = start_x - 2*s * np.sin(angle)
-        start_y = start_y - 2*s * np.cos(angle)
+        start_x = start_x - height * np.sin(angle)
+        start_y = start_y - width * np.cos(angle)
 
         while y < y_max + 2*s & x < x_max + 2*s:
-            y += 2*s * np.sin(angle)
-            x += 2*s * np.cos(angle)
+            y += height * np.sin(angle)
+            x += width * np.cos(angle)
             x_coords.append(x)
             y_coords.append(y)
 
         x = start_x
         y = start_y
         while x > x_min - 2*s & y > y_min - 2*s:
-            y -= 2*s * np.sin(angle)
-            x -= 2*s * np.cos(angle)
+            y -= height * np.sin(angle)
+            x -= width * np.cos(angle)
             x_coords.append(x)
             y_coords.append(y)
 
