@@ -38,9 +38,10 @@ def generate_hex_grid_optimized(x_min, x_max, y_min, y_max, s, start_x, start_y,
     y_coords.append(start_y)
     xx = x
     yy = y
-    while start_x>x_min-2*s & start_y>y_min-2*s:
+
+    while (start_x>x_min-2*s) & (start_y>y_min-2*s):
         
-        while y < y_max + 2*s & x < x_max + 2*s:
+        while (y < y_max + 2*s) & (x < x_max + 2*s):
             y += height * np.sin(angle)
             x += width * np.cos(angle)
             x_coords.append(x)
@@ -48,7 +49,7 @@ def generate_hex_grid_optimized(x_min, x_max, y_min, y_max, s, start_x, start_y,
 
         x = start_x
         y = start_y
-        while x > x_min - 2*s & y > y_min - 2*s:
+        while (x > x_min - 2*s) & (y > y_min - 2*s):
             y -= height * np.sin(angle)
             x -= width * np.cos(angle)
             x_coords.append(x)
@@ -59,12 +60,12 @@ def generate_hex_grid_optimized(x_min, x_max, y_min, y_max, s, start_x, start_y,
 
     start_x = xx
     start_y = yy
-    while start_x< x_max+2*s & start_y<y_max+2*s:
+    while (start_x< x_max+2*s) & (start_y<y_max+2*s):
 
         start_x = start_x - height * np.sin(angle)
         start_y = start_y - width * np.cos(angle)
 
-        while y < y_max + 2*s & x < x_max + 2*s:
+        while (y < y_max + 2*s) & (x < x_max + 2*s):
             y += height * np.sin(angle)
             x += width * np.cos(angle)
             x_coords.append(x)
@@ -72,26 +73,10 @@ def generate_hex_grid_optimized(x_min, x_max, y_min, y_max, s, start_x, start_y,
 
         x = start_x
         y = start_y
-        while x > x_min - 2*s & y > y_min - 2*s:
+        while (x > x_min - 2*s) & (y > y_min - 2*s):
             y -= height * np.sin(angle)
             x -= width * np.cos(angle)
             x_coords.append(x)
             y_coords.append(y)
 
     return np.array(x_coords), np.array(y_coords)
-
-# Define border bounding box
-x_min, x_max = min(x_coords), max(x_coords)
-y_min, y_max = min(y_coords), max(y_coords)
-
-# Generate hexagonal grid with side length s
-s = 1  # Example side length
-hex_x, hex_y = generate_hex_grid(x_min, x_max, y_min, y_max, s)
-
-# Define border bounding box
-x_min, x_max = min(x_coords), max(x_coords)
-y_min, y_max = min(y_coords), max(y_coords)
-
-# Generate hexagonal grid with side length s
-s = 1  # Example side length
-hex_x, hex_y = generate_hex_grid(x_min, x_max, y_min, y_max, s)
