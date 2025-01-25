@@ -37,7 +37,7 @@ def findBorders(col1 , col2):
     highest_y = col2.max()
     lowest_y = col2.min()
 
-    return [highest_x, lowest_x, highest_y, lowest_y]
+    return highest_x, lowest_x, highest_y, lowest_y
 
 def getPolygonFromPoints(col1, col2):
     points = list(zip(col1, col2))
