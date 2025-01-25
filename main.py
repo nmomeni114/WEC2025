@@ -112,7 +112,7 @@ print("Total stations: " + str(inside + intersecting))
 
 
 ##THIS OPTIMIZATION ALGORYTHEM IS DONE WITH THE HEP OF CLAUDE AI
-
+##ALMOST ENTIRELY DUE TO LACK OF TIME
 print("\nStarting optimization...")
 
 # Store initial configuration

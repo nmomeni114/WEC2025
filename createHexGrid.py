@@ -34,6 +34,7 @@ def generate_hex_grid(x_min, x_max, y_min, y_max, s ,x_start, y_start):
 #generate center points for a hexagon grid
 #allows for a starting point and angle
 #angle is in radians
+#DOSENT WORK
 def generate_hex_grid_optimized(x_min, x_max, y_min, y_max, s, start_x, start_y, angle):
     width = 2 * s
     height = np.sqrt(3) * s
