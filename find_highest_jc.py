@@ -1,6 +1,6 @@
 import pandas as pd
 
-def findCentre(file_path):
+def findHighest(file_path):
     """
     Finds the highest, lowest x and y coordinates in kilometers from a CSV file containing (x, y) in kilometers.
 
