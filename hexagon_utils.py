@@ -47,32 +47,36 @@ def create_hexagon(center_x, center_y, s):
     y_hex = center_y + s * np.sin(angles)
     return Polygon(zip(x_hex, y_hex))
 
-def greedy_hexagon_coverage(border_points, hex_grid, hex_radius):
-    uncovered_points = set(border_points)  # All border points
+def greedy_hexagon_coverage(border_points, hex_grid, s):
+    """
+    Greedy algorithm to find the minimal number of hexagons for full coverage.
+
+    Parameters:
+        border_points: List of (x, y) points defining the border
+        hex_grid: List of (x, y) hexagon centers
+        s: Side length of the hexagons
+
+    Returns:
+        List of Shapely Polygons representing the selected hexagons
+    """
+    uncovered_points = set(border_points)
     selected_hexagons = []
 
     while uncovered_points:
         best_hexagon = None
         max_coverage = 0
 
-        for hex_center in hex_grid:
-            # Create a hexagon
-            hexagon = create_hexagon(hex_center[0], hex_center[1], hex_radius)
-            
-            # Calculate coverage
+        for hx, hy in hex_grid:
+            hexagon = create_hexagon(hx, hy, s)
             coverage = [p for p in uncovered_points if hexagon.contains(Point(p))]
-            
+
             if len(coverage) > max_coverage:
                 max_coverage = len(coverage)
                 best_hexagon = hexagon
 
         if best_hexagon:
-            # Add the best hexagon
             selected_hexagons.append(best_hexagon)
-
-            # Remove covered points from the uncovered list
-            uncovered_points = uncovered_points - set(
-                [p for p in uncovered_points if best_hexagon.contains(Point(p))]
-            )
+            # Remove covered points from the uncovered set
+            uncovered_points -= set([p for p in uncovered_points if best_hexagon.contains(Point(p))])
 
     return selected_hexagons
